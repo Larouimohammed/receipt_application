@@ -1,0 +1,98 @@
+
+
+{% extends 'receipt/index.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="container-section">
+        <form action="{% url 'home' %}" method="post" class="create-receipt-form">
+            {% csrf_token %}
+             
+            <input type="text" name="receipt_name" id="receipt_name" required placeholder="receipt name">
+            <input type="text" name="receipt_items" id="rreceipt_items" required placeholder="receipt items">
+            <input type ="number" name ="receipt_amount" id = "receipt_amount" required placeholder="receipt total amount">
+            <button type="submit">Add Receipt</button>
+        </form>
+    </div>
+
+    {% for i in page_obj %}
+    <div class="receipt-container">
+        <div class="items">
+            <p>Receipt Name : {{ i.name }}</p>
+            <p>Receipt Date creation : {{i.purchase_date}}</p>
+            <p>Receipt Items : {{i.purchase_items}}</p>
+            <p>Receipt Total Amount : {{i.total_amount}}</p>
+            <ul class="crud-buttons">
+                <li>
+                    <button id="edit-receipt" data-toggle="modal" data-target="#editTodoModal_{{ i.id }}">Edit</button>
+
+                    <div class="modal fade" id="editTodoModal_{{ i.id }}" tabindex="-1" role="dialog"
+                        aria-labelledby="editTodoModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editTodoModalLabel">Update Receipt Item</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true" id="close-edit-modal">&times;</span>
+                                    </button>
+                                </div>
+                                <form action="{% url 'update_receipt' i.id %}" method="post" class="edit-receipt-form">
+                                    {% csrf_token %}
+                                    <div class="modal-body">
+                                        <input type="text" name="receipt_{{ i.id }}" value="{{ i.name }}" required
+                                            size="40">
+                                            <input type="text" name="receipt_items_{{ i.id }}"  value="{{ i.purchase_items }}" required
+                                            size="40">
+                                            <input type="number" name="receipt_amount_{{ i.id }}" value="{{i.total_amount }}" required
+                                            size="40">
+
+                                    </div>
+                                    <div class="modal-footerr">
+                                        <button type="button" class="btn btn-sm btn-secondary"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-sm btn-primary"
+                                            id="edit-receipt-submit">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li><a href="{% url 'delete_receipt' i.id %}" id="delete-receipt">Delete</a></li>
+            </ul>
+        </div>
+    </div>
+    {% endfor %}
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item previous-page">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1">Previous</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled previous-page">
+                    <a class="page-link" href="?page=0" tabindex="-1">Previous</a>
+                </li>
+            {% endif %}
+
+            <li class="page-item active current-page">
+                <a class="page-link" href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
+            </li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item next-page">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" tabindex="-1">Next</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled next-page">
+                    <a class="page-link" href="?page=0" tabindex="-1">Next</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+
+{% endblock %}
