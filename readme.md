@@ -20,7 +20,7 @@ git clone https://github.com/Larouimohammed/receipt_application.git
 Go to the project directory
 
 ```bash
-  cd crud_app
+  cd receipt_application
 ```
 
 Install dependencies
